@@ -3,24 +3,28 @@ from typing import (
     List,
 )
 
+LessThan = Callable[[object, object], bool]
+
 class MinHeap():
     INIT_SIZE = 32
     def __init__(
-            self, less_than: Callable[[object, object], bool], *,
+            self, less_than: LessThan, *,
             arr: List[object]=None
         ):
         self.less_than = less_than
         self.arr: List = None
+        self.count = 0
         if arr is None:
             self.arr: List[object] = [None for _ in range(self.INIT_SIZE)]
-            self.count = 0
+            self.cap = len(self.arr)
         else:
             self.arr = arr
             self.count = len(self.arr)
+            self.cap = len(self.arr)
+            self.min_heapify()
             # Then do heapify
-        self.cap = len(self.arr)
         return
-    # TODO: heapify, sift_up, sift_down, extract_min, insert
+
     def is_empty(self) -> bool:
         return self.count == 0
     
@@ -49,11 +53,12 @@ class MinHeap():
             if i_l <= bound and self.less_than(arr[i_l - 1], arr[idx]):
                 swp = i_l
             if i_r <= bound and self.less_than(arr[i_r - 1], arr[idx]) \
-                and self.less_than(arr[i_r], arr[i_l]):
+                and self.less_than(arr[i_r-1], arr[i_l-1]):
                 swp = i_r
             if swp == idx:
                 break
             swp -= 1
+            #print(arr[idx], arr[swp])
             tmp      = arr[idx]
             arr[idx] = arr[swp]
             arr[swp] = tmp
@@ -64,6 +69,7 @@ class MinHeap():
         #arr = self.arr
         max_idx = (self.count >> 1) - 1 #(len(arr) >> 1) - 1
         for i in range(max_idx, -1, -1):
+            #print(f"doing sift down on [{i}]={self.arr[i]}")
             self.sift_down(i)
         return
     

@@ -9,11 +9,13 @@ from typing import (
 from .minheap import (
     MinHeap,
 )
+from .unionfind import UFNode
 
 
 class Vertex():
     def __init__(self, ident: Hashable):
         # TODO: Add a `uf_node` member and implement `union-find` data struct.
+        self.uf_node = UFNode() # for kruskal's algorithm.
         self.ident = ident
         self.edges = dict() # Mapping[Hashable, Edge] 
         return
