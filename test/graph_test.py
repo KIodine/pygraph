@@ -80,18 +80,18 @@ class TestShortestPath(unittest.TestCase):
         return
     
     def test_random_graph(self):
+        FAKE_INF = -1
         N_VERTICES = 8192
         
         g   = pygraph.gen_graph(N_VERTICES)
         res = pygraph.shortest_path(g, "0000", "0001")
         
         self.assertEqual(len(res), len(g.vertices))
+        # Ensure all nodes got updated.
+        self.assertTrue(
+            all(
+                map(lambda tp: tp[0] != FAKE_INF and not tp[1] is None, res)
+            )
+        )
         return
     pass
-
-# Ignore this case by now.
-class TestMinimumSpanningTree(unittest.TestCase):
-    pass
-
-
-unittest.main(verbosity=2)

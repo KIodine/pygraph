@@ -14,7 +14,6 @@ from .graph import (
 
 
 # dijkstra:
-    # --- Done init
     # distances: Mapping[VertexID, int]
     # -- or Mapping[VertexID, Tuple[int, VertexID]], the second for 
     #    `source` vertex.
@@ -47,6 +46,7 @@ def shortest_path(graph: Graph, src_id: Hashable, dst_id: Hashable):
     #   remove.
     visited: Set[Hashable] = set()
     distances: Mapping[Hashable, List[int, Hashable]] = dict()
+    
     def dist_less_than(v_a: Hashable, v_b: Hashable) -> bool:
         d_a, d_b = distances[v_a][0], distances[v_b][0]
         if d_a == FAKE_INF and d_b == FAKE_INF:
@@ -56,6 +56,7 @@ def shortest_path(graph: Graph, src_id: Hashable, dst_id: Hashable):
         if d_b == FAKE_INF:
             return True
         return d_a < d_b
+    
     minqueue = MinHeap(dist_less_than)
     
     for v in graph.vertices.values():
