@@ -13,85 +13,34 @@ class TestGraphBasic(unittest.TestCase):
         vert_b = g.vertices["b"]
         self.assertTrue(vert_a.edges["b"] == vert_b.edges["a"])
         return
-    pass
-
-class TestShortestPath(unittest.TestCase):
-    def test_graph_a(self):
-        g = pygraph.Graph()
-        expected = {
-            'a': [0, 'a'],
-            'b': [2, 'a'],
-            'c': [3, 'b'],
-            'd': [6, 'a'],
-            'e': [8, 'd']
-        }
-        # --- vertices
-        g.AddVertex("a")
-        g.AddVertex("b")
-        g.AddVertex("c")
-        g.AddVertex("d")
-        g.AddVertex("e")
-        # --- edges
-        g.AddEdge("a", "b", 2)
-        g.AddEdge("a", "c", 13)
-        g.AddEdge("b", "c", 1)
-        g.AddEdge("d", "a", 6)
-        g.AddEdge("d", "e", 2)
-        
-        res = pygraph.shortest_path(g, "a", "c")
-        
-        self.assertEqual(res, expected)
-        return
     
-    def test_graph_b(self):
-        g = pygraph.Graph()
-        expected = {
-            'a': [0, 'a'],
-            'b': [10, 'f'],
-            'c': [5, 'f'],
-            'd': [24, 'e'],
-            'e': [11, 'c'],
-            'f': [3, 'a'],
-            'g': [16, 'c']
-        }
-        # --- vertices
-        g.AddVertex("a")
-        g.AddVertex("b")
-        g.AddVertex("c")
-        g.AddVertex("d")
-        g.AddVertex("e")
-        g.AddVertex("f")
-        g.AddVertex("g")
-        # --- edges
-        g.AddEdge("a", "b", 32)
-        g.AddEdge("a", "f", 3)
-        g.AddEdge("b", "e", 12)
-        g.AddEdge("b", "c", 21)
-        g.AddEdge("b", "f", 7)
-        g.AddEdge("c", "e", 6)
-        g.AddEdge("c", "f", 2)
-        g.AddEdge("c", "g", 11)
-        g.AddEdge("d", "e", 13)
-        g.AddEdge("d", "g", 9)
+    def test_graph_equal(self):
+        g_a = pygraph.Graph()
+        g_b = pygraph.Graph()
+        # setup 'g_a'
+        g_a.AddVertex('a')
+        g_a.AddVertex('b')
+        g_a.AddEdge('a', 'b', 3)
+        # setup 'g_b'
+        g_b.AddVertex('a')
+        g_b.AddVertex('b')
+        g_b.AddEdge('a', 'b', 3)
+        self.assertEqual(g_a, g_b)
 
-        res = pygraph.shortest_path(g, "a", "g")
+        with self.assertRaises(pygraph.GraphException):
+            _ = g_a == True
 
-        self.assertEqual(res, expected)
+        g_b.AddVertex('c')
+        g_b.AddEdge('b', 'c', 3)
+        self.assertNotEqual(g_a, g_b)
+
+        g_a.AddVertex('c')
+        self.assertNotEqual(g_a, g_b)
+
+        g_a.AddEdge('b', 'c', 4)
+        self.assertNotEqual(g_a, g_b)
+
         return
-    
-    def test_random_graph(self):
-        FAKE_INF = -1
-        N_VERTICES = 8192
-        
-        g   = pygraph.gen_graph(N_VERTICES)
-        res = pygraph.shortest_path(g, "0000", "0001")
-        
-        self.assertEqual(len(res), len(g.vertices))
-        # Ensure all nodes got updated.
-        self.assertTrue(
-            all(
-                map(lambda tp: tp[0] != FAKE_INF and not tp[1] is None, res)
-            )
-        )
-        return
+
+    # def test_graph_copy(self):
     pass

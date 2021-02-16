@@ -15,5 +15,9 @@ from .unionfind import (
     union,
     is_connected
 )
+from .kruskal import (
+    min_span_tree
+)
+from .exceptions import *
 
 __version__ = "0.0.1a0"

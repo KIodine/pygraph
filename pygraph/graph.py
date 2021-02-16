@@ -10,6 +10,9 @@ from .minheap import (
     MinHeap,
 )
 from .unionfind import UFNode
+from .exceptions import (
+    GraphException,
+)
 
 
 class Vertex():
@@ -27,6 +30,24 @@ class Vertex():
             )
         )
         return s
+    
+    def __eq__(self, other) -> bool:
+        if not isinstance(other, type(self)):
+            raise GraphException(
+                "Cannot compare type {} with {}".format(type(self), type(other))
+            )
+        v_other: Vertex = other
+        if self.ident != v_other.ident:
+            return False
+        if self.edges.keys() != v_other.edges.keys():
+            #print("no equal links")
+            return False
+        for ident, edge in self.edges.items():
+            edge_other = v_other.edges[ident]
+            if edge.weight != edge_other.weight:
+                #print("no equal weight")
+                return False
+        return True
     pass
 
 
@@ -60,11 +81,27 @@ class Graph():
         )
         return s
 
+    def __eq__(self, other) -> bool:
+        if not isinstance(other, type(self)):
+            raise GraphException(f"Cannot compare type {type(self)} and {type(other)}.")
+        # Compare each edge of vertices, if they have the same
+        # destination and weight, they are the same.
+        g_other: Graph = other
+        if self.vertices.keys() != g_other.vertices.keys():
+            return False
+        for ident, v in self.vertices.items():
+            if v != g_other.vertices[ident]:
+                return False
+        return True
+
     @classmethod
     def FromSpec(cls, spec: str):
         return
 
+    # FIXME: Determine the correct behavior of adding an existed ident?
     def AddVertex(self, ident: Hashable) -> Vertex:
+        if ident in self.vertices.keys():
+            return
         self.vertices[ident] = Vertex(ident)
         return
     
