@@ -21,7 +21,6 @@ from .unionfind import (
 def edge_less(a: Edge, b: Edge) -> bool:
     return a.weight < b.weight
 
-# TODO: MinimumSpanningTree
 def min_span_tree(g: Graph) -> Graph:
     # Minimum spanning tree using Kruskal's algorithm.
     # Put all edges into minqueue
